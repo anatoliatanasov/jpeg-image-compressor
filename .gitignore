@@ -18,4 +18,4 @@ hs_err_pid*
 */.idea/**
 
 # Sample images folder
-*/sample_images/**
+sample_images/
