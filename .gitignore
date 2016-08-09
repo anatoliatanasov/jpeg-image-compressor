@@ -16,3 +16,6 @@ hs_err_pid*
 
 # IntelliJ Idea folders
 */.idea/**
+
+# Sample images folder
+*/sample_images/**
