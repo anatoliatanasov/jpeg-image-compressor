@@ -63,6 +63,9 @@ public final class Starter {
             CommandLineParser cliParser = new DefaultParser();
 
             this.cliArgs = cliParser.parse(this.cliOptions, javaAppArgs);
+            this.cliArgs.getParsedOptionValue("srcfolder");
+            this.cliArgs.getParsedOptionValue("compressionratio");
+            this.cliArgs.getParsedOptionValue("compressionthreads");
             logger.fine("Successfully parsed CLI arguments!");
 
             if(this.cliArgs.hasOption("help")) {
@@ -135,9 +138,13 @@ public final class Starter {
             return 0;
         });
 
+        final String compressionThreads = getCliArgument("compressionthreads");
+        Integer numberOfThreads = compressionThreads == null ? null : Integer.valueOf(compressionThreads);
 
+        final String compressionRatio = getCliArgument("compressionratio");
+        Float compRatio = compressionRatio == null ? null : Float.valueOf(compressionRatio);
         tasks.add(() -> {
-            IStageProcessor compressor = new ImageCompressor(4);
+            IStageProcessor compressor = new ImageCompressor(numberOfThreads, compRatio);
             compressor.setMessageQueue(ImageCompressionQueue.getInstance());
             compressor.process();
             return 0;
@@ -170,10 +177,10 @@ public final class Starter {
         lock.unlock();
     }
 
-    private BlockingQueue<JpegImageCompressionMessage> jpegMessagesQueue = null;
+
 
     private Starter() {
-        jpegMessagesQueue = new LinkedBlockingDeque<JpegImageCompressionMessage>();
+
     }
 
 
@@ -200,6 +207,20 @@ public final class Starter {
                 .numberOfArgs(1)
                 .build();
 
+        Option compressionRatio = Option.builder("compressionratio")
+                .argName("compressionratio")
+                .desc("JPEG compression ratio to compress images with.")
+                .numberOfArgs(1)
+                .type(Float.class)
+                .build();
+
+        Option numberOfCompressionThreads = Option.builder("compressionthreads")
+                .argName("compressionthreads")
+                .desc("Number of parallel threads that will handle the images compression.")
+                .numberOfArgs(1)
+                .type(Integer.class)
+                .build();
+
         Option help = Option.builder("help")
                 .argName("help")
                 .desc("Prints this message.")
@@ -214,6 +235,8 @@ public final class Starter {
         options.addOption(help);
         options.addOption(recursively);
         options.addOption(logFile);
+        options.addOption(compressionRatio);
+        options.addOption(numberOfCompressionThreads);
 
         logger.fine("Successfully configured command line interface arguments!");
 
@@ -258,6 +281,7 @@ public final class Starter {
         logger.setUseParentHandlers(false);
 
         logger.fine("Successfully configured Java logging facility!");
+
 
     }
 }

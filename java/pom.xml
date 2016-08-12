@@ -87,10 +87,14 @@
                   <mainClass>name.atanasov.home.jpegcompressor.Main</mainClass>
                   <arguments>
                     <argument>-srcfolder</argument>
-                    <argument>/Volumes/iva</argument>
+                    <argument>/Users/anatoli/Work/My_Projects/dev/my_assets/jpg_compressor/sample_images</argument>
                     <argument>-recursively</argument>
                     <argument>-logfile</argument>
-                    <argument>jpeg-compressor.trace</argument>
+                    <argument>jpeg-compressor.txt</argument>
+                    <argument>-compressionthreads</argument>
+                    <argument>8</argument>
+                    <argument>-compressionratio</argument>
+                    <argument>0.9f</argument>
                   </arguments>
                 </configuration>
               </execution>
